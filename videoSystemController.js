@@ -42,6 +42,7 @@ class VideoSystemController {
     this.#view.bindAdminMenu(
       this.handleNewProductionForm,
       this.handleRemoveCategoryForm,
+      this.handleAssignDeassignCastForm,
     );
     this.#view.bindProductionsCategory(this.handleProductionsCategoryList);
     this.#view.bindShowActor(this.handleShowActor);
@@ -230,7 +231,7 @@ class VideoSystemController {
       this.handleRemoveProduction,
       this.handleProductionsCategoryList,
     );
-  };
+  }; 
 
   //Manejador de crear Produccion, recibe los parametros de validation.js
   handleCreateProduction = (
@@ -312,6 +313,39 @@ class VideoSystemController {
     }
     this.#view.showRemoveProductionModal(done, production, error);
   };
+
+   //Manejador del formulario de asignar y deasignar reparto y director
+  handleAssignDeassignCastForm = (action, productionName, actorName, directorName) =>{
+
+    let production ="";
+    let actor ="";
+    let director ="";
+    let done = false;
+    let error;
+
+    try {
+      for(const prod of this.#model.productions){
+        if(prod.title === productionName){
+          production = prod;
+        }
+
+        //Dependiendo del boton
+        if(action === "assignDirector"){
+          for(const dir of this.#model.directors){
+            if(dir.name === directorName){
+              director = dir;
+              this.#model.assignDirector(director, production);
+            }
+          }
+        }
+
+      }
+    } catch (error) {
+      
+    }
+
+    this.#view.showAssignDeassignForm(this.#model.directors,this.#model.actors,this.#model.productions);
+  }
 
   //Carga inicial de datos
   #loadVideoSystemObjects() {

@@ -739,19 +739,7 @@ class VideoSystemView {
     );
     suboptions.insertAdjacentHTML(
       "beforeend",
-      '<li><a id="liAssignActor" class="dropdown-item" href="#new-product">Asignar actor</a></li>',
-    );
-    suboptions.insertAdjacentHTML(
-      "beforeend",
-      '<li><a id="liDeassignActor" class="dropdown-item" href="#del-product">Desasignar actor</a></li>',
-    );
-    suboptions.insertAdjacentHTML(
-      "beforeend",
-      '<li><a id="liAssignDirector" class="dropdown-item" href="#del-product">Asignar director</a></li>',
-    );
-    suboptions.insertAdjacentHTML(
-      "beforeend",
-      '<li><a id="liDeassignDirector" class="dropdown-item" href="#del-product">Desasignar director</a></li>',
+      '<li><a id="liAssignDeassignCast" class="dropdown-item" href="#assign-actor">Asignar y desasignar</a></li>',
     );
     menuOption.append(suboptions);
     this.menu.append(menuOption);
@@ -987,6 +975,83 @@ class VideoSystemView {
     });
   }
 
+  showAssignDeassignForm(directors, actors, productions) {
+    this.main.replaceChildren();
+    if (this.categories.children.length > 1)
+      this.categories.children[1].remove();
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("my-3");
+    container.id = "assign-deassign-cast";
+
+    //Desplegable de categorias
+    let productionOptions = "";
+
+    for (const production of productions) {
+      productionOptions += `<option value= "${production.title}">
+      ${production.title}
+      </option>
+      `;
+    }
+
+    //Desplegable de directores
+    let directorOptions = "";
+
+    for (const director of directors) {
+      directorOptions += `<option value= "${director.name}">
+      ${director.name} ${director.lastname1}
+      </option>
+      `;
+    }
+
+    //Desplegable actores
+    let actorsOptions = "";
+
+    for (const actor of actors) {
+      actorsOptions += `<option value= "${actor.name}">
+      ${actor.name} ${actor.lastname1}
+      </option>
+      `;
+    }
+
+    container.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 class="display-5">Asignar y desasignar reparto y director</h1>',
+    );
+    container.insertAdjacentHTML(
+      "beforeend",
+      `<form name="formAssignDeassign" role="form" class="row g-3" novalidate>	
+		
+      <select name="production" class="form-select">
+      <option value="">Selecciona produccion</option>
+      ${productionOptions}
+      </select>
+
+      <select name="director" class="form-select">
+      <option value="">Selecciona director</option>
+      ${directorOptions}
+      </select>
+
+      <button class="btn btn-primary" data-action="assignDirector">Asignar director</button>
+      <button class="btn btn-warning" data-action="deassignDirector">Quitar director</button>		
+
+      <select name="actors" multiple class="form-select">
+      <option value="">Selecciona actor</option>
+      ${actorsOptions}
+      </select>
+
+      <button class="btn btn-primary" data-action="assignActor">Asignar actor</button>
+      <button class="btn btn-warning" data-action="deassignActor">Quitar actor</button>			
+      <div class="mb-12">
+      <button class="btn btn-danger" type="reset">Cancelar</button>
+      </div>
+		</form>`,
+    );
+
+    this.main.append(container);
+  }
+
   //-----BINDS-----//
   //Bind enlaces inicio y logo
   bindInit(handler) {
@@ -1164,7 +1229,8 @@ class VideoSystemView {
   }
 
   //Vinculo del enlace de Administracion con el manejador del formulario
-  bindAdminMenu(hNewProduction, hRemoveProduction) {
+  bindAdminMenu(hNewProduction, hRemoveProduction, hAssignActor) {
+    //Crear nueva produccion
     const newProductionLink = document.getElementById("liNewProduction");
     if (newProductionLink) {
       newProductionLink.addEventListener("click", (event) => {
@@ -1172,11 +1238,20 @@ class VideoSystemView {
         hNewProduction();
       });
     }
+    //Borrar produccion
     const delProductionLink = document.getElementById("liDelProduction");
     if (delProductionLink) {
       delProductionLink.addEventListener("click", (event) => {
         event.preventDefault();
         hRemoveProduction();
+      });
+    }
+    //Asignar actor a produccion
+    const assignActorLink = document.getElementById("liAssignDeassignCast");
+    if (assignActorLink) {
+      assignActorLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        hAssignActor();
       });
     }
   }
@@ -1187,25 +1262,46 @@ class VideoSystemView {
   }
 
   //Enlaza la vista de borrado de producciones con el handler
-  bindRemoveProductionForm(delHandler, getProductionHandler){
-    const removeContainer = document.getElementById('remove-production');
-    const buttons = removeContainer.getElementsByTagName('button');
+  bindRemoveProductionForm(delHandler, getProductionHandler) {
+    const removeContainer = document.getElementById("remove-production");
+    const buttons = removeContainer.getElementsByTagName("button");
 
     //A cada boton le asignamos un evento y recogemos el dataset de la produccion
-    for(const button of buttons){
-      button.addEventListener('click', (event) =>{
+    for (const button of buttons) {
+      button.addEventListener("click", (event) => {
         delHandler(event.currentTarget.dataset.production);
       });
     }
 
-    const productionLinks = removeContainer.querySelectorAll('a[data-production]');
+    const productionLinks =
+      removeContainer.querySelectorAll("a[data-production]");
 
-    for(const link of productionLinks){
-      link.addEventListener('click', (event) => {
+    for (const link of productionLinks) {
+      link.addEventListener("click", (event) => {
         event.preventDefault();
         getProductionHandler(event.currentTarget.dataset.production);
-      })
+      });
     }
+  }
+
+  //Enlaza la vista de asignar Actor a produccion con el handler
+  bindAssignDeassign(handler) {
+    const form = document.form.formAssignDeassign;    
+    const buttons = form.getElementsByTagName("button[data-action]"); //Nos quedamos con el data-action del boton
+
+    //A cada boton le asignamos un evento y recogemos el dataset de la produccion
+    for (const button of buttons) {
+      button.addEventListener("click", (event) => {
+        const action = event.currentTarget.dataset.action;
+        const productionName = form.production.value;
+        console.log(productionName);
+        const actorName = form.actor.value;
+        const directorName = form.director.value;
+        
+        handler(action, productionName, actorName, directorName);
+      });
+    }
+    console.log(handler);
   }
 
   //Bind del boton Cerrar del boton de la card
