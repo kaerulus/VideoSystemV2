@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VideoSystem Manager</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="d-flex flex-column min-vh-100 bg-light">
+    <header>
+      <nav class="navbar navbar-expand navbar-dark bg-dark shadow">
+        <div class="container">
+          <div class="navbar-brand" id="logo" href="#">
+            <img src="./img/logo.png" alt="logo" width="100" />
+          </div>
+          <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav" id="menu-categories">
+              <li class="navbar-item active">
+                <a id="init" class="nav-link active" href="#">Inicio</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- Menu de categorias -->
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="categoriesDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Categorías
+          </button>
+
+          <div class="dropdown-menu" id="categories-dropdown"></div>
+        </div>
+
+        <!-- Menu de actores -->
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="actorsDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Reparto
+          </button>
+
+          <div class="dropdown-menu" id="actors-dropdown"></div>
+        </div>
+
+        <!-- Menu de direccion -->
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="directorsDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Direccion
+          </button>
+
+          <div class="dropdown-menu" id="directors-dropdown"></div>
+        </div>
+      </nav>
+    </header>
+
+    <!--MAIN-->
+    <main></main>
+
+    <!--CATEGORIAS-->
+    <div id="categories" data-type="list" class="container cat-list"></div>
+
+    <!--PRODUCCIONES RANDOM-->
+    <div
+      id="rndmProductions"
+      data-type="list"
+      class="container rndm-list"
+    ></div>
+
+    <!--MODAL DE FORMULARIO-->    
+    <div
+      class="modal fade"
+      id="messageModal"
+      tabindex="-1"
+      aria-labelledby="messageModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+          <!-- Header -->
+          <div class="modal-header border-0">
+            <h5 class="modal-title fw-bold" id="messageModalTitle">
+              <i class="bi bi-info-circle me-2"></i> Mensaje
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <!-- Body -->
+          <div class="modal-body text-center py-4">
+            <div id="messageIcon" class="mb-3">
+              <!-- Icono dinámico -->
+              <i class="bi bi-check-circle-fill text-success fs-1"></i>
+            </div>
+            <p id="messageText" class="fs-5 mb-0">
+              Operación realizada correctamente
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div class="modal-footer border-0 justify-content-center">
+            <button
+              type="button"
+              class="btn btn-primary px-4"
+              data-bs-dismiss="modal">Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--FOOTER-->
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+      <div class="container">
+        <small>DWEC - JavaScript</small>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="videoSystemApp.js"></script>
+    <script type="module" src="videoSystemController.js"></script>
+    <script type="module" src="videoSystemView.js"></script>
+  </body>
+</html>

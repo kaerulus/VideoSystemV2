@@ -1,0 +1,182 @@
+//Estructura Maps
+
+#persons:
+    name → Person {
+        name,
+        lastname1,
+        lastname2,
+        born,
+        picture
+    }
+
+#categories:
+    categoryName → {
+        category: Category {
+            name,
+            description
+        },
+        productions: [
+
+        ]
+    }
+
+#resources:
+    resourceId → Resource {
+        duration,
+        link
+    }
+
+#productions:
+    title → Production {
+        title:,
+        nationality:,
+        publication:,
+        sunopsis:,
+        image
+    }
+
+#movies:
+    title → Movie {
+        //Atrbutos heredados de Production
+        title:,
+        nationality:,
+        publication:,
+        sunopsis:,
+        image,
+
+        //Relacion con resources
+        //Atributos propios de Movie
+        
+        resource: resourceID,
+
+        //Array objetos Coordinate 
+        locations [
+            {
+                latitude:
+                longitude:
+            },
+             {
+                latitude:
+                longitude:
+            }
+        ]
+    }
+
+#series:
+    title → Serie {
+
+        //Heredado de Production
+        title:,
+        nationality:,
+        publication:,
+        sunopsis:,
+        image,
+
+        //Atributos propios de Serie
+        resources: [
+            resourceId1,
+            resourceId2
+        ],
+
+        //Array objetos Coordinate 
+        locations [
+            {
+                latitude:
+                longitude:
+            },
+             {
+                latitude:
+                longitude:
+            }
+        ],
+
+        seasons:
+    }
+
+#users:
+    username → User {
+        username:,
+        email:,
+        password:
+    }
+
+#coordinate:
+    name → Coordinate {
+        latitude:,
+        longitude:
+    }
+
+
+
+//Estructura Arrays
+persons:
+[
+    {
+        name,
+        lastname,
+        lastname2,
+        born,
+        picture
+    }
+]
+
+#categories :
+[
+    {
+        category: {
+            name,
+            description
+        }
+        productions_title.map
+    }
+]
+
+resources : [
+    {
+        duration,
+        link
+    }
+]
+
+#productions :
+[
+    {
+        title,
+        nationality,
+        publication,
+        synopsis,
+        image
+    }
+]
+
+movies : 
+[
+    {
+        resource,
+        locations[
+
+        ]
+    }
+]
+
+series : 
+[
+    {
+        resources[
+
+        ],
+        locations[
+
+        ],
+        seasons
+    }
+]
+
+users :
+[
+    {
+        username,
+        email,
+        password
+    }
+]
