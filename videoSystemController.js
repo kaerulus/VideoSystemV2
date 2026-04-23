@@ -231,7 +231,16 @@ class VideoSystemController {
       this.handleRemoveProduction,
       this.handleProductionsCategoryList,
     );
-  }; 
+  };
+
+  handleAssignDeassignCastForm = () => {
+    this.#view.showAssignDeassignForm(
+      this.#model.directors,
+      this.#model.actors,
+      this.#model.productions,
+    );
+    this.#view.bindAssignDeassign(this.handleAssignDeassignCast);
+  };
 
   //Manejador de crear Produccion, recibe los parametros de validation.js
   handleCreateProduction = (
@@ -294,7 +303,7 @@ class VideoSystemController {
   handleRemoveProduction = (title) => {
     let done = false;
     let error;
-    let production = "";
+    let production = null;
 
     try {
       for (const prod of this.#model.productions) {
@@ -314,38 +323,83 @@ class VideoSystemController {
     this.#view.showRemoveProductionModal(done, production, error);
   };
 
-   //Manejador del formulario de asignar y deasignar reparto y director
-  handleAssignDeassignCastForm = (action, productionName, actorName, directorName) =>{
-
-    let production ="";
-    let actor ="";
-    let director ="";
+  //Manejador del formulario de asignar y deasignar reparto y director
+  handleAssignDeassignCast = (
+    action,
+    productionName,
+    actorName,
+    directorName,
+  ) => {
+    let production = null;
+    let actor = null;
+    let director = null;
     let done = false;
     let error;
 
     try {
-      for(const prod of this.#model.productions){
-        if(prod.title === productionName){
+      for (const prod of this.#model.productions) {
+        if (prod.title === productionName) {
           production = prod;
+          break;
         }
-
-        //Dependiendo del boton
-        if(action === "assignDirector"){
-          for(const dir of this.#model.directors){
-            if(dir.name === directorName){
-              director = dir;
-              this.#model.assignDirector(director, production);
-            }
+      }
+      //DIRECTOR
+      if (action === "assignDirector") {
+        if(!directorName) return;
+        for (const dir of this.#model.directors) {
+          if (dir.name === directorName) {
+            director = dir;
+            this.#model.assignDirector(director, production);
+            done = true;
+            break;
           }
         }
-
       }
-    } catch (error) {
-      
+      if (action === "deassignDirector") {
+        if(!directorName) return;
+        for (const dir of this.#model.directors) {
+          if (dir.name === directorName) {
+            director = dir;
+            this.#model.deassignDirector(director, production);
+            done = true;
+            break;
+          }
+        }
+      }
+
+      //ACTOR
+      if (action === "assignActor") {
+        if(!actorName) return;
+        for (const act of this.#model.actors) {
+          if (act.name === actorName) {
+            actor = act;
+            this.#model.assignActor(actor, production);
+            done = true;
+            break;
+          }
+        }
+      }
+      if (action === "deassignActor") {
+        if(!actorName) return;
+        for (const act of this.#model.actors) {
+          if (act) {
+            actor = act;
+            this.#model.deassignDirector(actor, production);
+            done = true;
+            break;
+          }
+        }
+      }  
+      if (done) {
+        this.onAddCategory();
+      }
+    } catch (exception) {
+      done = false;
+      error = exception;
     }
 
-    this.#view.showAssignDeassignForm(this.#model.directors,this.#model.actors,this.#model.productions);
-  }
+    this.#view.showAssignDeassignModal(done, production, error);
+  };
 
   //Carga inicial de datos
   #loadVideoSystemObjects() {

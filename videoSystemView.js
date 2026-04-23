@@ -983,7 +983,7 @@ class VideoSystemView {
     const container = document.createElement("div");
     container.classList.add("container");
     container.classList.add("my-3");
-    container.id = "assign-deassign-cast";
+    container.id = "assign-deassign";
 
     //Desplegable de categorias
     let productionOptions = "";
@@ -1036,7 +1036,7 @@ class VideoSystemView {
       <button class="btn btn-primary" data-action="assignDirector">Asignar director</button>
       <button class="btn btn-warning" data-action="deassignDirector">Quitar director</button>		
 
-      <select name="actors" multiple class="form-select">
+      <select name="actor" class="form-select">
       <option value="">Selecciona actor</option>
       ${actorsOptions}
       </select>
@@ -1050,6 +1050,44 @@ class VideoSystemView {
     );
 
     this.main.append(container);
+  }
+
+  //Muestra modal de creacion de Produccion
+  showAssignDeassignModal(done, prod, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal("#messageModal");
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Modificar casting produccion";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">
+        La producción <strong>${prod.title}</strong> ha sido modificada correctamente.
+      </div>`,
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3">
+        <i class="bi bi-exclamation-triangle"></i>
+        ${error.message}
+      </div>`,
+      );
+    }
+    messageModal.show();
+    const listener = () => {
+      if (done) {
+        //document.formAssignDeassign.reset();
+      }      
+    };
+
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
   }
 
   //-----BINDS-----//
@@ -1286,22 +1324,27 @@ class VideoSystemView {
 
   //Enlaza la vista de asignar Actor a produccion con el handler
   bindAssignDeassign(handler) {
-    const form = document.form.formAssignDeassign;    
-    const buttons = form.getElementsByTagName("button[data-action]"); //Nos quedamos con el data-action del boton
+    const form = document.forms.formAssignDeassign;
+    const assignDeassignContainer = document.getElementById('assign-deassign');
+    const buttons = assignDeassignContainer.querySelectorAll("button[data-action]"); //Nos quedamos con el data-action del boton
 
     //A cada boton le asignamos un evento y recogemos el dataset de la produccion
     for (const button of buttons) {
       button.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
         const action = event.currentTarget.dataset.action;
-        const productionName = form.production.value;
-        console.log(productionName);
+        const productionName = form.production.value;        
         const actorName = form.actor.value;
         const directorName = form.director.value;
+
+        console.log(productionName);
+        console.log(directorName)  
         
         handler(action, productionName, actorName, directorName);
       });
-    }
-    console.log(handler);
+    }    
   }
 
   //Bind del boton Cerrar del boton de la card
